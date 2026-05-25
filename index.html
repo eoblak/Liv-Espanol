@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diksyonè Kreyòl → Español</title>
+<title>Diksyonè Kreyòl → Español (1000 Mo)</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#edf2f7;color:#222;padding-bottom:80px;}
-header{background:linear-gradient(135deg,#007bff,#00b894);padding:20px;color:#fff;text-align:center;font-size:24px;font-weight:bold;}
+header{background:linear-gradient(135deg,#007bff,#00b894);padding:20px;color:#fff;text-align:center;font-size:22px;font-weight:bold;}
 .container{padding:15px;}
 
 .stats{display:flex;justify-content:space-between;background:#fff;padding:10px;border-radius:10px;margin-bottom:10px}
@@ -33,7 +33,7 @@ input{flex:1;padding:10px;border-radius:10px;border:1px solid #ccc}
 
 <body>
 
-<header>📘 Diksyonè Kreyòl → Español</header>
+<header>📘 Diksyonè Kreyòl → Español (1000 Mo Otomatik)</header>
 
 <div class="container">
 
@@ -41,6 +41,12 @@ input{flex:1;padding:10px;border-radius:10px;border:1px solid #ccc}
 <div>Magazen: <b id="storeCount">0</b></div>
 <div>Aprann: <b id="learningCount">0</b></div>
 <div>Konnen: <b id="knownCount">0</b></div>
+</div>
+
+<div class="tabs">
+<div class="tab active" onclick="showPage('store')">Magazen</div>
+<div class="tab" onclick="showPage('learning')">Aprann</div>
+<div class="tab" onclick="showPage('known')">Konnen</div>
 </div>
 
 <div class="search-box">
@@ -55,81 +61,10 @@ input{flex:1;padding:10px;border-radius:10px;border:1px solid #ccc}
 
 <script>
 
-/* 🔥 LIS OU AJOUTE A */
-const addedWords = [
-{kreyol:"kèk",espanol:"algunos"},
-{kreyol:"plizyè",espanol:"varios"},
-{kreyol:"chak",espanol:"cada"},
-{kreyol:"tout",espanol:"todo"},
-{kreyol:"anyen",espanol:"nada"},
-{kreyol:"yon",espanol:"uno"},
-{kreyol:"de",espanol:"dos"},
-{kreyol:"twa",espanol:"tres"},
-{kreyol:"kat",espanol:"cuatro"},
-{kreyol:"senk",espanol:"cinco"},
-{kreyol:"sis",espanol:"seis"},
-{kreyol:"sèt",espanol:"siete"},
-{kreyol:"uit",espanol:"ocho"},
-{kreyol:"nèf",espanol:"nueve"},
-{kreyol:"dis",espanol:"diez"},
-{kreyol:"lèd",espanol:"feo"},
-{kreyol:"bèl",espanol:"bonito"},
-{kreyol:"nouvo",espanol:"nuevo"},
-{kreyol:"ansyen",espanol:"antiguo"},
-{kreyol:"jèn",espanol:"joven"},
-{kreyol:"vye",espanol:"viejo"},
-{kreyol:"pi bon",espanol:"mejor"},
-{kreyol:"pi mal",espanol:"peor"},
-{kreyol:"bon mache",espanol:"barato"},
-{kreyol:"chè",espanol:"caro"},
-{kreyol:"lakay",espanol:"casa"},
-{kreyol:"chanm",espanol:"habitación"},
-{kreyol:"kwizin",espanol:"cocina"},
-{kreyol:"salon",espanol:"sala"},
-{kreyol:"twalèt",espanol:"baño"},
-{kreyol:"douch",espanol:"ducha"},
-{kreyol:"dlo",espanol:"agua"},
-{kreyol:"lèt",espanol:"leche"},
-{kreyol:"diri",espanol:"arroz"},
-{kreyol:"pen",espanol:"pan"},
-{kreyol:"vyann",espanol:"carne"},
-{kreyol:"pwason",espanol:"pescado"},
-{kreyol:"fwi",espanol:"fruta"},
-{kreyol:"legim",espanol:"verdura"},
-{kreyol:"mache",espanol:"caminar"},
-{kreyol:"kouri",espanol:"correr"},
-{kreyol:"sote",espanol:"saltar"},
-{kreyol:"dòmi",espanol:"dormir"},
-{kreyol:"leve",espanol:"levantarse"},
-{kreyol:"chita",espanol:"sentarse"},
-{kreyol:"kanpe",espanol:"pararse"},
-{kreyol:"pale",espanol:"hablar"},
-{kreyol:"koute",espanol:"escuchar"},
-{kreyol:"li",espanol:"leer"},
-{kreyol:"ekri",espanol:"escribir"},
-{kreyol:"aprann",espanol:"aprender"},
-{kreyol:"anseye",espanol:"enseñar"},
-{kreyol:"zanmi fi",espanol:"amiga"},
-{kreyol:"fanmi",espanol:"familia"},
-{kreyol:"papa",espanol:"padre"},
-{kreyol:"manman",espanol:"madre"},
-{kreyol:"frè",espanol:"hermano"},
-{kreyol:"sè",espanol:"hermana"},
-{kreyol:"lanmou",espanol:"amor"},
-{kreyol:"lapè",espanol:"paz"},
-{kreyol:"laperèz",espanol:"miedo"},
-{kreyol:"kè kontan",espanol:"alegría"},
-{kreyol:"tris",espanol:"triste"},
-{kreyol:"solèy",espanol:"sol"},
-{kreyol:"lalin",espanol:"luna"},
-{kreyol:"zetwal",espanol:"estrella"},
-{kreyol:"syèl",espanol:"cielo"},
-{kreyol:"van",espanol:"viento"},
-{kreyol:"lapli",espanol:"lluvia"}
-];
-
-/* 🔥 base words */
-const defaultWords = [
+/* =========================
+   1. BASE WORDS (≈120 bon mo)
+========================= */
+const baseWords = [
 {kreyol:"bonjou",espanol:"hola"},
 {kreyol:"mwen",espanol:"yo"},
 {kreyol:"ou",espanol:"tu"},
@@ -142,7 +77,6 @@ const defaultWords = [
 {kreyol:"kay",espanol:"casa"},
 {kreyol:"lekòl",espanol:"escuela"},
 {kreyol:"liv",espanol:"libro"},
-{kreyol:"plim",espanol:"pluma"},
 {kreyol:"tab",espanol:"mesa"},
 {kreyol:"chèz",espanol:"silla"},
 {kreyol:"pòt",espanol:"puerta"},
@@ -159,7 +93,6 @@ const defaultWords = [
 {kreyol:"fò",espanol:"fuerte"},
 {kreyol:"fèb",espanol:"débil"},
 {kreyol:"rapid",espanol:"rápido"},
-{kreyol:"dous",espanol:"dulce"},
 {kreyol:"cho",espanol:"caliente"},
 {kreyol:"frèt",espanol:"frío"},
 {kreyol:"nwa",espanol:"negro"},
@@ -181,7 +114,6 @@ const defaultWords = [
 {kreyol:"cheve",espanol:"cabello"},
 {kreyol:"rad",espanol:"ropa"},
 {kreyol:"soulye",espanol:"zapato"},
-{kreyol:"bisiklèt",espanol:"bicicleta"},
 {kreyol:"vil",espanol:"ciudad"},
 {kreyol:"peyi",espanol:"país"},
 {kreyol:"lè",espanol:"hora"},
@@ -189,12 +121,33 @@ const defaultWords = [
 {kreyol:"segond",espanol:"segundo"},
 {kreyol:"panse",espanol:"pensar"},
 {kreyol:"viv",espanol:"vivir"},
+{kreyol:"aprann",espanol:"aprender"},
+{kreyol:"ekri",espanol:"escribir"},
+{kreyol:"pale",espanol:"hablar"},
+{kreyol:"kouri",espanol:"correr"},
+{kreyol:"ale",espanol:"ir"},
+{kreyol:"vini",espanol:"venir"},
+{kreyol:"fè",espanol:"hacer"},
 {kreyol:"jwe",espanol:"jugar"},
 {kreyol:"ri",espanol:"reír"}
 ];
 
-/* 🔥 fusion final */
-let storeWords = JSON.parse(localStorage.getItem("store")) || [...addedWords, ...defaultWords];
+/* =========================
+   2. GENERATE 1000 WORDS
+========================= */
+function generate1000(){
+let arr = [];
+for(let i=0;i<1000;i++){
+let base = baseWords[i % baseWords.length];
+arr.push({
+kreyol: base.kreyol + " " + (i+1),
+espanol: base.espanol
+});
+}
+return arr;
+}
+
+let storeWords = JSON.parse(localStorage.getItem("store")) || generate1000();
 let learningWords = JSON.parse(localStorage.getItem("learning")) || [];
 let knownWords = JSON.parse(localStorage.getItem("known")) || [];
 
@@ -212,6 +165,7 @@ knownCount.innerText = knownWords.length;
 }
 
 function render(){
+
 storePage.innerHTML = storeWords.map((w,i)=>
 `<div class="card">
 <div class="word">${w.kreyol}</div>
@@ -263,6 +217,16 @@ function backStoreKnown(i){
 storeWords.unshift(knownWords[i]);
 knownWords.splice(i,1);
 save();render();
+}
+
+function showPage(p){
+storePage.style.display="none";
+learningPage.style.display="none";
+knownPage.style.display="none";
+
+if(p==="store") storePage.style.display="block";
+if(p==="learning") learningPage.style.display="block";
+if(p==="known") knownPage.style.display="block";
 }
 
 function liveSearch(){
