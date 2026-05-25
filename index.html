@@ -6,43 +6,115 @@
 <title>Diksyonè Kreyòl → Español</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#edf2f7;padding-bottom:100px;}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#edf2f7;
+padding-bottom:100px;
+color:#222;
+}
+
 header{
 background:linear-gradient(135deg,#007bff,#00b894);
-padding:20px;color:white;text-align:center;font-size:24px;font-weight:bold;
+color:white;
+text-align:center;
+padding:18px;
+font-size:22px;
+font-weight:bold;
 }
+
+.sub{font-size:13px;opacity:0.9;margin-top:5px;}
 
 .container{padding:15px;}
 
+/* INPUT BOX */
 .form-box{
-background:white;padding:15px;border-radius:15px;margin-bottom:15px;
+background:white;
+padding:15px;
+border-radius:15px;
+margin-bottom:15px;
 box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
 
 input{
-width:100%;padding:12px;margin-bottom:10px;
-border-radius:10px;border:1px solid #ddd;font-size:16px;
+width:100%;
+padding:12px;
+margin-top:8px;
+border-radius:10px;
+border:1px solid #ddd;
+font-size:16px;
 }
 
 button{
-padding:10px;border:none;border-radius:10px;
-cursor:pointer;font-weight:bold;
+margin-top:10px;
+padding:12px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
 }
 
 .add-btn{background:#00b894;color:white;width:100%;}
 
+/* STATS */
+.stats{
+display:flex;
+justify-content:space-between;
+background:white;
+padding:12px;
+border-radius:15px;
+margin-bottom:15px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+.stat{text-align:center;}
+.stat h3{color:#007bff;}
+
+/* TABS */
+.tabs{
+display:flex;
+gap:8px;
+margin-bottom:15px;
+}
+
+.tab{
+flex:1;
+padding:10px;
+background:#dfe6e9;
+border-radius:10px;
+text-align:center;
+font-weight:bold;
+cursor:pointer;
+}
+
+.active{background:#007bff;color:white;}
+
+/* CARD */
 .card{
-background:white;padding:15px;margin-bottom:10px;
-border-radius:15px;box-shadow:0 2px 8px rgba(0,0,0,0.1);
+background:white;
+padding:15px;
+border-radius:15px;
+margin-bottom:10px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
 .word{font-size:20px;font-weight:bold;color:#007bff;}
 .translation{margin-top:5px;color:#444;}
 
-.actions{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;}
+.actions{
+display:flex;
+gap:10px;
+margin-top:10px;
+flex-wrap:wrap;
+}
 
-.sound{background:#ff9500;color:white;}
-.web{background:#6c5ce7;color:white;}
+.learn-btn{background:#00b894;color:white;}
+.back-btn{background:#6c5ce7;color:white;}
+.sound-btn{background:#ff9500;color:white;}
 
 .empty{text-align:center;color:gray;padding:20px;}
 </style>
@@ -52,95 +124,197 @@ border-radius:15px;box-shadow:0 2px 8px rgba(0,0,0,0.1);
 
 <header>
 📘 Diksyonè Kreyòl → Español
+<div class="sub">Aprann • Reaprann • Pataje</div>
 </header>
 
 <div class="container">
 
-<!-- 🔥 ZÒN AJOUT MO -->
+<!-- ➕ AJOUT MO -->
 <div class="form-box">
 <h3>➕ Ajoute nouvo mo</h3>
 <input id="kreyolInput" placeholder="Mo kreyòl">
 <input id="espInput" placeholder="Traduction espagnol">
-<button class="add-btn" onclick="addWord()">Ajoute</button>
+<button class="add-btn" onclick="addWord()">💾 Ajoute</button>
 </div>
 
-<!-- 📚 LIS MO -->
-<div id="list"></div>
+<!-- 📊 STATS -->
+<div class="stats">
+<div class="stat">
+<h3 id="storeCount">0</h3>
+<p>Magazen</p>
+</div>
+<div class="stat">
+<h3 id="learningCount">0</h3>
+<p>Aprann</p>
+</div>
+<div class="stat">
+<h3 id="knownCount">0</h3>
+<p>Konnen</p>
+</div>
+</div>
+
+<!-- 📚 TABS -->
+<div class="tabs">
+<div class="tab active" onclick="show('store')">📚 Magazen</div>
+<div class="tab" onclick="show('learning')">🧠 Aprann</div>
+<div class="tab" onclick="show('known')">✅ Konnen</div>
+</div>
+
+<!-- 📦 LIST -->
+<div id="store"></div>
+<div id="learning" style="display:none"></div>
+<div id="known" style="display:none"></div>
 
 </div>
 
 <script>
 
-// 👉 SÈLMAN 2 MO DEFAULT
-let words = JSON.parse(localStorage.getItem("words")) || [
+// 🔥 DEFAULT 2 MO
+let store = JSON.parse(localStorage.getItem("store")) || [
 {kreyol:"bonjou",espanol:"hola"},
 {kreyol:"mwen",espanol:"yo"}
 ];
 
+let learning = JSON.parse(localStorage.getItem("learning")) || [];
+let known = JSON.parse(localStorage.getItem("known")) || [];
+
 function save(){
-localStorage.setItem("words",JSON.stringify(words));
-render();
+localStorage.setItem("store",JSON.stringify(store));
+localStorage.setItem("learning",JSON.stringify(learning));
+localStorage.setItem("known",JSON.stringify(known));
+updateStats();
 }
 
 function addWord(){
-let k = document.getElementById("kreyolInput").value.trim();
-let e = document.getElementById("espInput").value.trim();
+let k = kreyolInput.value.trim();
+let e = espInput.value.trim();
 
-if(k==="" || e===""){
-alert("Ranpli tou 2 chan yo !");
+if(!k || !e){
+alert("Ranpli 2 chan yo !");
 return;
 }
 
-words.unshift({kreyol:k,espanol:e});
+store.unshift({kreyol:k,espanol:e});
+kreyolInput.value="";
+espInput.value="";
 save();
-
-document.getElementById("kreyolInput").value="";
-document.getElementById("espInput").value="";
+render();
 }
 
-function render(){
-let box = document.getElementById("list");
-box.innerHTML="";
-
-if(words.length===0){
-box.innerHTML="<div class='empty'>Pa gen mo</div>";
-return;
+function updateStats(){
+storeCount.innerText = store.length;
+learningCount.innerText = learning.length;
+knownCount.innerText = known.length;
 }
 
-words.forEach(w=>{
-box.innerHTML += `
-<div class="card">
-<div class="word">${w.kreyol}</div>
-<div class="translation">${w.espanol}</div>
+function show(type){
+storeEl.style.display="none";
+learningEl.style.display="none";
+knownEl.style.display="none";
 
-<div class="actions">
+storeTab.classList.remove("active");
+learningTab.classList.remove("active");
+knownTab.classList.remove("active");
 
-<button class="sound" onclick="speak('${w.espanol}')">
-🔊 Tande
-</button>
+if(type==="store"){storeEl.style.display="block";storeTab.classList.add("active");}
+if(type==="learning"){learningEl.style.display="block";learningTab.classList.add("active");}
+if(type==="known"){knownEl.style.display="block";knownTab.classList.add("active");}
 
-<a class="web"
-href="https://translate.google.com/?sl=ht&tl=es&text=${w.kreyol}&op=translate"
-target="_blank">
-🌐 Internet son
-</a>
+render();
+}
 
-</div>
-</div>
-`;
-});
+function moveToLearning(i){
+learning.unshift(store[i]);
+store.splice(i,1);
+save();render();
+}
+
+function moveToKnown(i){
+known.unshift(learning[i]);
+learning.splice(i,1);
+save();render();
+}
+
+function backToStore(i){
+store.unshift(learning[i]);
+learning.splice(i,1);
+save();render();
+}
+
+function backFromKnown(i){
+store.unshift(known[i]);
+known.splice(i,1);
+save();render();
 }
 
 function speak(text){
-if('speechSynthesis' in window){
 let msg = new SpeechSynthesisUtterance(text);
-msg.lang = "es-ES";
+msg.lang="es-ES";
 speechSynthesis.speak(msg);
-}else{
-alert("Telefon ou pa sipòte son");
-}
 }
 
+function render(){
+
+storeEl.innerHTML="";
+learningEl.innerHTML="";
+knownEl.innerHTML="";
+
+// STORE
+store.forEach((w,i)=>{
+storeEl.innerHTML += `
+<div class="card">
+<div class="word">${w.kreyol}</div>
+<div class="translation">${w.espanol}</div>
+<div class="actions">
+<button class="sound-btn" onclick="speak('${w.espanol}')">🔊</button>
+<a class="back-btn" target="_blank"
+href="https://translate.google.com/?sl=ht&tl=es&text=${w.kreyol}&op=translate">
+🌐
+</a>
+<button class="learn-btn" onclick="moveToLearning(${i})">📚</button>
+</div>
+</div>`;
+});
+
+// LEARNING
+learning.forEach((w,i)=>{
+learningEl.innerHTML += `
+<div class="card">
+<div class="word">${w.kreyol}</div>
+<div class="translation">${w.espanol}</div>
+<div class="actions">
+<button class="sound-btn" onclick="speak('${w.espanol}')">🔊</button>
+<button class="learn-btn" onclick="moveToKnown(${i})">✅</button>
+<button class="back-btn" onclick="backToStore(${i})">↩</button>
+</div>
+</div>`;
+});
+
+// KNOWN
+known.forEach((w,i)=>{
+knownEl.innerHTML += `
+<div class="card">
+<div class="word">${w.kreyol}</div>
+<div class="translation">${w.espanol}</div>
+<div class="actions">
+<button class="sound-btn" onclick="speak('${w.espanol}')">🔊</button>
+<button class="back-btn" onclick="backFromKnown(${i})">🔁</button>
+</div>
+</div>`;
+});
+
+updateStats();
+}
+
+let storeEl=document.getElementById("store");
+let learningEl=document.getElementById("learning");
+let knownEl=document.getElementById("known");
+
+let storeTab=document.querySelectorAll(".tab")[0];
+let learningTab=document.querySelectorAll(".tab")[1];
+let knownTab=document.querySelectorAll(".tab")[2];
+
+updateStats();
 render();
 
 </script>
