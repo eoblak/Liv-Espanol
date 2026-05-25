@@ -6,30 +6,86 @@
 <title>Diksyonè Kreyòl → Español</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#edf2f7;color:#222;padding-bottom:80px;}
-header{background:linear-gradient(135deg,#007bff,#00b894);padding:20px;color:#fff;text-align:center;font-size:24px;font-weight:bold;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+
+body{background:#edf2f7;color:#222;padding-bottom:100px;}
+
+header{
+background:linear-gradient(135deg,#007bff,#00b894);
+padding:20px;
+color:white;
+text-align:center;
+font-size:26px;
+font-weight:bold;
+box-shadow:0 3px 10px rgba(0,0,0,0.2);
+}
+
+.sub{font-size:14px;margin-top:5px;opacity:0.9;}
+
 .container{padding:15px;}
 
-.stats{display:flex;justify-content:space-between;background:#fff;padding:10px;border-radius:10px;margin-bottom:10px}
-.stat{text-align:center}
+.big-learning-box{
+background:linear-gradient(135deg,#00b894,#00cec9);
+padding:18px;
+border-radius:20px;
+margin-bottom:20px;
+color:white;
+box-shadow:0 3px 10px rgba(0,0,0,0.2);
+}
 
-.tabs{display:flex;gap:10px;margin:10px 0}
-.tab{flex:1;padding:10px;background:#ddd;text-align:center;border-radius:10px;cursor:pointer}
-.active{background:#007bff;color:#fff}
+.search-box{display:flex;gap:10px;margin-bottom:10px;}
 
-.card{background:#fff;padding:10px;margin:10px 0;border-radius:10px}
-.word{font-size:20px;color:#007bff;font-weight:bold}
-.translation{margin-top:5px}
+input{
+flex:1;
+padding:14px;
+border:none;
+border-radius:15px;
+font-size:17px;
+outline:none;
+background:white;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
 
-button{padding:8px;border:none;border-radius:8px;cursor:pointer}
-.learn-btn{background:#00b894;color:#fff}
-.back-btn{background:#6c5ce7;color:#fff}
-.sound-btn{background:#ff9500;color:#fff}
+button{
+border:none;
+border-radius:12px;
+padding:12px;
+cursor:pointer;
+font-weight:bold;
+}
 
-.search-box{display:flex;gap:10px;margin:10px 0}
-input{flex:1;padding:10px;border-radius:10px;border:1px solid #ccc}
+.search-btn{background:#007bff;color:white;}
 
-.empty{text-align:center;color:gray;padding:20px}
+.tabs{display:flex;gap:10px;margin-bottom:20px;}
+
+.tab{
+flex:1;
+padding:13px;
+text-align:center;
+background:#dfe6e9;
+border-radius:15px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.active{background:#007bff;color:white;}
+
+.card{
+background:white;
+padding:15px;
+border-radius:20px;
+margin-bottom:15px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.word{font-size:24px;font-weight:bold;color:#007bff;}
+.translation{font-size:20px;margin-top:5px;color:#444;}
+
+.learn-btn{background:#00b894;color:white;margin-top:10px;}
+.back-btn{background:#6c5ce7;color:white;margin-top:10px;}
+
+.empty{text-align:center;padding:30px;color:gray;}
+
 </style>
 </head>
 
@@ -37,15 +93,10 @@ input{flex:1;padding:10px;border-radius:10px;border:1px solid #ccc}
 
 <header>
 📘 Diksyonè Kreyòl → Español
+<div class="sub">Aprann • Reaprann • Pataje</div>
 </header>
 
 <div class="container">
-
-<div class="stats">
-<div>Magazen: <b id="storeCount">0</b></div>
-<div>Aprann: <b id="learningCount">0</b></div>
-<div>Konnen: <b id="knownCount">0</b></div>
-</div>
 
 <div class="tabs">
 <div class="tab active" onclick="showPage('store')">Magazen</div>
@@ -76,8 +127,19 @@ const defaultWords = [
 {kreyol:"manje",espanol:"comida"},
 {kreyol:"zanmi",espanol:"amigo"},
 {kreyol:"kay",espanol:"casa"},
+{kreyol:"travay",espanol:"trabajo"},
+{kreyol:"renmen",espanol:"amor"},
+{kreyol:"machin",espanol:"coche"},
 {kreyol:"lekòl",espanol:"escuela"},
 {kreyol:"liv",espanol:"libro"},
+{kreyol:"solèy",espanol:"sol"},
+{kreyol:"lalin",espanol:"luna"},
+{kreyol:"chen",espanol:"perro"},
+{kreyol:"chat",espanol:"gato"},
+{kreyol:"mache",espanol:"caminar"},
+{kreyol:"bwè",espanol:"beber"},
+{kreyol:"dòmi",espanol:"dormir"},
+{kreyol:"timoun",espanol:"niño"},
 {kreyol:"plim",espanol:"pluma"},
 {kreyol:"tab",espanol:"mesa"},
 {kreyol:"chèz",espanol:"silla"},
@@ -96,6 +158,7 @@ const defaultWords = [
 {kreyol:"fèb",espanol:"débil"},
 {kreyol:"rapid",espanol:"rápido"},
 {kreyol:"dous",espanol:"dulce"},
+{kreyol:"sale",espanol:"salado"},
 {kreyol:"cho",espanol:"caliente"},
 {kreyol:"frèt",espanol:"frío"},
 {kreyol:"nwa",espanol:"negro"},
@@ -105,7 +168,6 @@ const defaultWords = [
 {kreyol:"vèt",espanol:"verde"},
 {kreyol:"jou",espanol:"día"},
 {kreyol:"lannwit",espanol:"noche"},
-{kreyol:"timoun",espanol:"niño"},
 {kreyol:"gason",espanol:"hombre"},
 {kreyol:"fanm",espanol:"mujer"},
 {kreyol:"men",espanol:"mano"},
@@ -136,21 +198,15 @@ const defaultWords = [
 {kreyol:"ri",espanol:"reír"}
 ];
 
-let storeWords = JSON.parse(localStorage.getItem("store")) || defaultWords;
-let learningWords = JSON.parse(localStorage.getItem("learning")) || [];
-let knownWords = JSON.parse(localStorage.getItem("known")) || [];
+let storeWords = JSON.parse(localStorage.getItem("storeWords")) || defaultWords;
+let learningWords = JSON.parse(localStorage.getItem("learningWords")) || [];
+let knownWords = JSON.parse(localStorage.getItem("knownWords")) || [];
 
 function save(){
-localStorage.setItem("store",JSON.stringify(storeWords));
-localStorage.setItem("learning",JSON.stringify(learningWords));
-localStorage.setItem("known",JSON.stringify(knownWords));
-updateStats();
-}
-
-function updateStats(){
-storeCount.innerText = storeWords.length;
-learningCount.innerText = learningWords.length;
-knownCount.innerText = knownWords.length;
+localStorage.setItem("storeWords",JSON.stringify(storeWords));
+localStorage.setItem("learningWords",JSON.stringify(learningWords));
+localStorage.setItem("knownWords",JSON.stringify(knownWords));
+render();
 }
 
 function render(){
@@ -167,7 +223,6 @@ learningWords.map((w,i)=>
 <div class="word">${w.kreyol}</div>
 <div class="translation">${w.espanol}</div>
 <button onclick="toKnown(${i})">Konnen</button>
-<button onclick="backStore(${i})">Retounen</button>
 </div>`).join("")
 : "<div class='empty'>Pa gen mo</div>";
 
@@ -176,35 +231,27 @@ knownWords.map((w,i)=>
 `<div class="card">
 <div class="word">${w.kreyol}</div>
 <div class="translation">${w.espanol}</div>
-<button onclick="backStoreKnown(${i})">Reaprann</button>
+<button onclick="backStore(${i})">Reaprann</button>
 </div>`).join("")
 : "<div class='empty'>Pa gen mo</div>";
-
-updateStats();
 }
 
 function toLearn(i){
 learningWords.unshift(storeWords[i]);
 storeWords.splice(i,1);
-save();render();
+save();
 }
 
 function toKnown(i){
 knownWords.unshift(learningWords[i]);
 learningWords.splice(i,1);
-save();render();
+save();
 }
 
 function backStore(i){
-storeWords.unshift(learningWords[i]);
-learningWords.splice(i,1);
-save();render();
-}
-
-function backStoreKnown(i){
 storeWords.unshift(knownWords[i]);
 knownWords.splice(i,1);
-save();render();
+save();
 }
 
 function showPage(p){
@@ -225,6 +272,7 @@ c.style.display = c.innerText.toLowerCase().includes(val) ? "block":"none";
 }
 
 render();
+
 </script>
 
 </body>
