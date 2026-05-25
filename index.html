@@ -118,8 +118,6 @@ flex-wrap:wrap;
 .learn-btn{background:#00b894;color:white;}
 .back-btn{background:#6c5ce7;color:white;}
 .sound-btn{background:#ff9500;color:white;}
-
-.empty{text-align:center;color:gray;padding:20px;}
 </style>
 </head>
 
@@ -138,7 +136,6 @@ flex-wrap:wrap;
 
 <input id="kreyolInput" placeholder="Mo kreyòl">
 
-<!-- PREVIEW TRADIKSYON -->
 <div id="preview" class="preview"></div>
 
 <input id="espInput" placeholder="Traduction espagnol">
@@ -209,24 +206,23 @@ save();
 render();
 }
 
-// 🌐 AUTO TRADIKSYON
+/* 🚀 GOOGLE TRANSLATE FAST (GTX) */
 async function translateKreyol(text){
 try{
-let res = await fetch("https://libretranslate.de/translate", {
-method: "POST",
-body: JSON.stringify({
-q: text,
-source: "ht",
-target: "es",
-format: "text"
-}),
-headers: { "Content-Type": "application/json" }
-});
+    let url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ht&tl=es&dt=t&q="
+    + encodeURIComponent(text);
 
-let data = await res.json();
-return data.translatedText;
+    let res = await fetch(url);
+    let data = await res.json();
+
+    if(data && data[0]){
+        return data[0].map(item => item[0]).join("");
+    }
+
+    return "";
+
 }catch(e){
-return "";
+    return "";
 }
 }
 
