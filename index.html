@@ -32,7 +32,6 @@ font-weight:bold;
 
 .container{padding:15px;}
 
-/* INPUT BOX */
 .form-box{
 background:white;
 padding:15px;
@@ -61,7 +60,12 @@ font-weight:bold;
 
 .add-btn{background:#00b894;color:white;width:100%;}
 
-/* STATS */
+.preview{
+margin-top:8px;
+color:#007bff;
+font-weight:bold;
+}
+
 .stats{
 display:flex;
 justify-content:space-between;
@@ -71,10 +75,10 @@ border-radius:15px;
 margin-bottom:15px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
+
 .stat{text-align:center;}
 .stat h3{color:#007bff;}
 
-/* TABS */
 .tabs{
 display:flex;
 gap:8px;
@@ -93,7 +97,6 @@ cursor:pointer;
 
 .active{background:#007bff;color:white;}
 
-/* CARD */
 .card{
 background:white;
 padding:15px;
@@ -129,15 +132,21 @@ flex-wrap:wrap;
 
 <div class="container">
 
-<!-- ➕ AJOUT MO -->
+<!-- AJOUT MO -->
 <div class="form-box">
 <h3>➕ Ajoute nouvo mo</h3>
+
 <input id="kreyolInput" placeholder="Mo kreyòl">
+
+<!-- PREVIEW TRADIKSYON -->
+<div id="preview" class="preview"></div>
+
 <input id="espInput" placeholder="Traduction espagnol">
+
 <button class="add-btn" onclick="addWord()">💾 Ajoute</button>
 </div>
 
-<!-- 📊 STATS -->
+<!-- STATS -->
 <div class="stats">
 <div class="stat">
 <h3 id="storeCount">0</h3>
@@ -153,14 +162,14 @@ flex-wrap:wrap;
 </div>
 </div>
 
-<!-- 📚 TABS -->
+<!-- TABS -->
 <div class="tabs">
 <div class="tab active" onclick="show('store')">📚 Magazen</div>
 <div class="tab" onclick="show('learning')">🧠 Aprann</div>
 <div class="tab" onclick="show('known')">✅ Konnen</div>
 </div>
 
-<!-- 📦 LIST -->
+<!-- LIST -->
 <div id="store"></div>
 <div id="learning" style="display:none"></div>
 <div id="known" style="display:none"></div>
@@ -169,10 +178,8 @@ flex-wrap:wrap;
 
 <script>
 
-// 🔥 DEFAULT 2 MO
 let store = JSON.parse(localStorage.getItem("store")) || [
-{kreyol:"bonjou",espanol:"hola"},
-{kreyol:"mwen",espanol:"yo"}
+{kreyol:"bonjou",espanol:"hola"}
 ];
 
 let learning = JSON.parse(localStorage.getItem("learning")) || [];
@@ -197,9 +204,51 @@ return;
 store.unshift({kreyol:k,espanol:e});
 kreyolInput.value="";
 espInput.value="";
+preview.innerText="";
 save();
 render();
 }
+
+// 🌐 AUTO TRADIKSYON
+async function translateKreyol(text){
+try{
+let res = await fetch("https://libretranslate.de/translate", {
+method: "POST",
+body: JSON.stringify({
+q: text,
+source: "ht",
+target: "es",
+format: "text"
+}),
+headers: { "Content-Type": "application/json" }
+});
+
+let data = await res.json();
+return data.translatedText;
+}catch(e){
+return "";
+}
+}
+
+kreyolInput.addEventListener("input", async ()=>{
+let text = kreyolInput.value.trim();
+
+if(text.length < 2){
+preview.innerText = "";
+return;
+}
+
+preview.innerText = "⏳ Tradiksyon ap chèche...";
+
+let result = await translateKreyol(text);
+
+if(result){
+preview.innerText = "🇪🇸 " + result;
+espInput.value = result;
+}else{
+preview.innerText = "❌ Pa jwenn tradiksyon";
+}
+});
 
 function updateStats(){
 storeCount.innerText = store.length;
@@ -259,7 +308,6 @@ storeEl.innerHTML="";
 learningEl.innerHTML="";
 knownEl.innerHTML="";
 
-// STORE
 store.forEach((w,i)=>{
 storeEl.innerHTML += `
 <div class="card">
@@ -267,16 +315,11 @@ storeEl.innerHTML += `
 <div class="translation">${w.espanol}</div>
 <div class="actions">
 <button class="sound-btn" onclick="speak('${w.espanol}')">🔊</button>
-<a class="back-btn" target="_blank"
-href="https://translate.google.com/?sl=ht&tl=es&text=${w.kreyol}&op=translate">
-🌐
-</a>
 <button class="learn-btn" onclick="moveToLearning(${i})">📚</button>
 </div>
 </div>`;
 });
 
-// LEARNING
 learning.forEach((w,i)=>{
 learningEl.innerHTML += `
 <div class="card">
@@ -290,7 +333,6 @@ learningEl.innerHTML += `
 </div>`;
 });
 
-// KNOWN
 known.forEach((w,i)=>{
 knownEl.innerHTML += `
 <div class="card">
