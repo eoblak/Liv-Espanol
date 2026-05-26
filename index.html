@@ -113,10 +113,25 @@ padding:15px;
 border-radius:15px;
 margin-bottom:10px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1);
+position:relative;
 }
 
-.word{font-size:20px;font-weight:bold;color:#007bff;}
-.translation{margin-top:5px;color:#444;}
+/* MO ESPANYÒL */
+.translation{
+margin-top:8px;
+color:#007bff;
+font-size:26px;
+font-weight:bold;
+text-align:center;
+}
+
+/* MO KREYÒL */
+.word{
+font-size:20px;
+font-weight:bold;
+color:#333;
+text-align:center;
+}
 
 .actions{
 display:flex;
@@ -149,24 +164,28 @@ flex:1;
 min-width:90px;
 }
 
-/* 🗑️ DELETE (pi piti) */
-.delete-btn{
-background:#e74c3c;
-color:white;
-padding:6px 8px;
-font-size:12px;
-border-radius:10px;
-font-weight:bold;
-flex:0;
-min-width:50px;
-}
-
+/* BACK */
 .back-btn{
 background:#6c5ce7;
 color:white;
 padding:12px;
 border-radius:10px;
 font-weight:bold;
+flex:1;
+min-width:90px;
+}
+
+/* DELETE sou anlè */
+.delete-btn{
+background:#e74c3c;
+color:white;
+padding:6px 10px;
+font-size:12px;
+border-radius:8px;
+font-weight:bold;
+position:absolute;
+top:8px;
+right:8px;
 }
 
 .preview{
@@ -174,7 +193,6 @@ margin-top:8px;
 color:#007bff;
 font-weight:bold;
 }
-
 </style>
 </head>
 
@@ -372,12 +390,12 @@ w.espanol.toLowerCase().includes(search)
 
 storeEl.innerHTML+=`
 <div class="card">
+<button class="delete-btn" onclick="deleteWord('store',${i})">🗑️</button>
 <div class="word">${w.kreyol}</div>
 <div class="translation">${w.espanol}</div>
 <div class="actions">
 <button class="sound-btn" onclick="speak('${w.espanol}')">🔊 Koute</button>
 <button class="learn-btn" onclick="moveToLearning(${i})">📚 Aprann</button>
-<button class="delete-btn" onclick="deleteWord('store',${i})">🗑️</button>
 </div>
 </div>`;
 });
@@ -385,13 +403,13 @@ storeEl.innerHTML+=`
 learning.forEach((w,i)=>{
 learningEl.innerHTML+=`
 <div class="card">
+<button class="delete-btn" onclick="deleteWord('learning',${i})">🗑️</button>
 <div class="word">${w.kreyol}</div>
 <div class="translation">${w.espanol}</div>
 <div class="actions">
 <button class="sound-btn" onclick="speak('${w.espanol}')">🔊 Koute</button>
 <button class="learn-btn" onclick="moveToKnown(${i})">✅</button>
 <button class="back-btn" onclick="backToStore(${i})">Magazen</button>
-<button class="delete-btn" onclick="deleteWord('learning',${i})">🗑️</button>
 </div>
 </div>`;
 });
@@ -399,12 +417,12 @@ learningEl.innerHTML+=`
 known.forEach((w,i)=>{
 knownEl.innerHTML+=`
 <div class="card">
+<button class="delete-btn" onclick="deleteWord('known',${i})">🗑️</button>
 <div class="word">${w.kreyol}</div>
 <div class="translation">${w.espanol}</div>
 <div class="actions">
 <button class="sound-btn" onclick="speak('${w.espanol}')">🔊 Koute</button>
-<button class="back-btn" onclick="backFromKnown(${i})">🔁</button>
-<button class="delete-btn" onclick="deleteWord('known',${i})">🗑️</button>
+<button class="back-btn" onclick="backFromKnown(${i})">Magazen</button>
 </div>
 </div>`;
 });
