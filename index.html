@@ -51,21 +51,20 @@ font-size:16px;
 
 button{
 margin-top:10px;
-padding:12px;
 border:none;
 border-radius:10px;
 cursor:pointer;
 font-weight:bold;
 }
 
-.add-btn{background:#00b894;color:white;width:100%;}
-
-.preview{
-margin-top:8px;
-color:#007bff;
-font-weight:bold;
+.add-btn{
+background:#00b894;
+color:white;
+width:100%;
+padding:12px;
 }
 
+/* 📊 stats */
 .stats{
 display:flex;
 justify-content:space-between;
@@ -79,6 +78,7 @@ box-shadow:0 2px 6px rgba(0,0,0,0.1);
 .stat{text-align:center;}
 .stat h3{color:#007bff;}
 
+/* 📑 tabs */
 .tabs{
 display:flex;
 gap:8px;
@@ -97,6 +97,7 @@ cursor:pointer;
 
 .active{background:#007bff;color:white;}
 
+/* 📦 cards */
 .card{
 background:white;
 padding:15px;
@@ -115,9 +116,46 @@ margin-top:10px;
 flex-wrap:wrap;
 }
 
-.learn-btn{background:#00b894;color:white;}
-.back-btn{background:#6c5ce7;color:white;}
-.sound-btn{background:#ff9500;color:white;}
+/* 🔊 KOUTE bouton (AGRANDI) */
+.sound-btn{
+background:#ff9500;
+color:white;
+padding:14px 18px;
+font-size:16px;
+border-radius:12px;
+font-weight:bold;
+flex:1;
+min-width:90px;
+}
+
+/* 📚 APRANN bouton (AGRANDI) */
+.learn-btn{
+background:#00b894;
+color:white;
+padding:14px 18px;
+font-size:16px;
+border-radius:12px;
+font-weight:bold;
+flex:1;
+min-width:90px;
+}
+
+/* ↩ / 🔁 */
+.back-btn{
+background:#6c5ce7;
+color:white;
+padding:12px;
+border-radius:10px;
+font-weight:bold;
+}
+
+/* preview */
+.preview{
+margin-top:8px;
+color:#007bff;
+font-weight:bold;
+}
+
 </style>
 </head>
 
@@ -135,7 +173,6 @@ flex-wrap:wrap;
 <h3>➕ Ajoute nouvo mo</h3>
 
 <input id="kreyolInput" placeholder="Mo kreyòl">
-
 <div id="preview" class="preview"></div>
 
 <input id="espInput" placeholder="Traduction espagnol">
@@ -206,50 +243,39 @@ save();
 render();
 }
 
-/* 🚀 GOOGLE TRANSLATE FAST (GTX) */
+/* 🌍 Google Translate */
 async function translateKreyol(text){
 try{
-    let url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=ht&tl=es&dt=t&q="
-    + encodeURIComponent(text);
-
-    let res = await fetch(url);
-    let data = await res.json();
-
-    if(data && data[0]){
-        return data[0].map(item => item[0]).join("");
-    }
-
-    return "";
-
-}catch(e){
-    return "";
-}
+let url="https://translate.googleapis.com/translate_a/single?client=gtx&sl=ht&tl=es&dt=t&q="+encodeURIComponent(text);
+let res=await fetch(url);
+let data=await res.json();
+return data?.[0]?.map(i=>i[0]).join("") || "";
+}catch(e){return "";}
 }
 
 kreyolInput.addEventListener("input", async ()=>{
 let text = kreyolInput.value.trim();
 
 if(text.length < 2){
-preview.innerText = "";
+preview.innerText="";
 return;
 }
 
-preview.innerText = "⏳ Tradiksyon ap chèche...";
-
+preview.innerText="⏳ Tradiksyon...";
 let result = await translateKreyol(text);
 
 if(result){
-preview.innerText = "🇪🇸 " + result;
-espInput.value = result;
+preview.innerText="🇪🇸 "+result;
+espInput.value=result;
 }else{
-preview.innerText = "❌ Pa jwenn tradiksyon";
+preview.innerText="❌ Pa jwenn";
 }
 });
 
 function updateStats(){
-storeCount.innerText = store.length;
-learningCount.innerText = learning.length;
-knownCount.innerText = known.length;
+storeCount.innerText=store.length;
+learningCount.innerText=learning.length;
+knownCount.innerText=known.length;
 }
 
 function show(type){
@@ -257,13 +283,9 @@ storeEl.style.display="none";
 learningEl.style.display="none";
 knownEl.style.display="none";
 
-storeTab.classList.remove("active");
-learningTab.classList.remove("active");
-knownTab.classList.remove("active");
-
-if(type==="store"){storeEl.style.display="block";storeTab.classList.add("active");}
-if(type==="learning"){learningEl.style.display="block";learningTab.classList.add("active");}
-if(type==="known"){knownEl.style.display="block";knownTab.classList.add("active");}
+if(type==="store") storeEl.style.display="block";
+if(type==="learning") learningEl.style.display="block";
+if(type==="known") knownEl.style.display="block";
 
 render();
 }
@@ -293,7 +315,7 @@ save();render();
 }
 
 function speak(text){
-let msg = new SpeechSynthesisUtterance(text);
+let msg=new SpeechSynthesisUtterance(text);
 msg.lang="es-ES";
 speechSynthesis.speak(msg);
 }
@@ -305,24 +327,24 @@ learningEl.innerHTML="";
 knownEl.innerHTML="";
 
 store.forEach((w,i)=>{
-storeEl.innerHTML += `
+storeEl.innerHTML+=`
 <div class="card">
 <div class="word">${w.kreyol}</div>
 <div class="translation">${w.espanol}</div>
 <div class="actions">
-<button class="sound-btn" onclick="speak('${w.espanol}')">🔊</button>
-<button class="learn-btn" onclick="moveToLearning(${i})">📚</button>
+<button class="sound-btn" onclick="speak('${w.espanol}')">🔊 Koute</button>
+<button class="learn-btn" onclick="moveToLearning(${i})">📚 Aprann</button>
 </div>
 </div>`;
 });
 
 learning.forEach((w,i)=>{
-learningEl.innerHTML += `
+learningEl.innerHTML+=`
 <div class="card">
 <div class="word">${w.kreyol}</div>
 <div class="translation">${w.espanol}</div>
 <div class="actions">
-<button class="sound-btn" onclick="speak('${w.espanol}')">🔊</button>
+<button class="sound-btn" onclick="speak('${w.espanol}')">🔊 Koute</button>
 <button class="learn-btn" onclick="moveToKnown(${i})">✅</button>
 <button class="back-btn" onclick="backToStore(${i})">↩</button>
 </div>
@@ -330,12 +352,12 @@ learningEl.innerHTML += `
 });
 
 known.forEach((w,i)=>{
-knownEl.innerHTML += `
+knownEl.innerHTML+=`
 <div class="card">
 <div class="word">${w.kreyol}</div>
 <div class="translation">${w.espanol}</div>
 <div class="actions">
-<button class="sound-btn" onclick="speak('${w.espanol}')">🔊</button>
+<button class="sound-btn" onclick="speak('${w.espanol}')">🔊 Koute</button>
 <button class="back-btn" onclick="backFromKnown(${i})">🔁</button>
 </div>
 </div>`;
