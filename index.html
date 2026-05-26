@@ -64,6 +64,15 @@ width:100%;
 padding:12px;
 }
 
+/* SEARCH */
+.search-box{
+background:white;
+padding:12px;
+border-radius:15px;
+margin-bottom:15px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
 /* 📊 stats */
 .stats{
 display:flex;
@@ -116,7 +125,7 @@ margin-top:10px;
 flex-wrap:wrap;
 }
 
-/* 🔊 KOUTE bouton (AGRANDI) */
+/* 🔊 */
 .sound-btn{
 background:#ff9500;
 color:white;
@@ -128,7 +137,7 @@ flex:1;
 min-width:90px;
 }
 
-/* 📚 APRANN bouton (AGRANDI) */
+/* 📚 */
 .learn-btn{
 background:#00b894;
 color:white;
@@ -140,7 +149,18 @@ flex:1;
 min-width:90px;
 }
 
-/* ↩ / 🔁 */
+/* 🗑️ */
+.delete-btn{
+background:#e74c3c;
+color:white;
+padding:14px 18px;
+font-size:16px;
+border-radius:12px;
+font-weight:bold;
+flex:1;
+min-width:90px;
+}
+
 .back-btn{
 background:#6c5ce7;
 color:white;
@@ -149,7 +169,6 @@ border-radius:10px;
 font-weight:bold;
 }
 
-/* preview */
 .preview{
 margin-top:8px;
 color:#007bff;
@@ -178,6 +197,11 @@ font-weight:bold;
 <input id="espInput" placeholder="Traduction espagnol">
 
 <button class="add-btn" onclick="addWord()">💾 Ajoute</button>
+</div>
+
+<!-- SEARCH -->
+<div class="search-box">
+<input id="searchInput" placeholder="🔍 Chèche yon mo..." oninput="render()">
 </div>
 
 <!-- STATS -->
@@ -218,6 +242,19 @@ let store = JSON.parse(localStorage.getItem("store")) || [
 
 let learning = JSON.parse(localStorage.getItem("learning")) || [];
 let known = JSON.parse(localStorage.getItem("known")) || [];
+
+/* 🧠 VÈB YO AJOUTE */
+let verbs = [
+{kreyol:"manje",espanol:"comer"},
+{kreyol:"bwè",espanol:"beber"},
+{kreyol:"dòmi",espanol:"dormir"},
+{kreyol:"kouri",espanol:"correr"}
+];
+
+/* ajoute vèb yo yon sèl fwa */
+if(store.length < 5){
+store = store.concat(verbs);
+}
 
 function save(){
 localStorage.setItem("store",JSON.stringify(store));
@@ -278,6 +315,15 @@ learningCount.innerText=learning.length;
 knownCount.innerText=known.length;
 }
 
+/* 🗑️ EFASÈ */
+function deleteWord(type,i){
+if(type==="store") store.splice(i,1);
+if(type==="learning") learning.splice(i,1);
+if(type==="known") known.splice(i,1);
+save();
+render();
+}
+
 function show(type){
 storeEl.style.display="none";
 learningEl.style.display="none";
@@ -322,11 +368,15 @@ speechSynthesis.speak(msg);
 
 function render(){
 
+let search = document.getElementById("searchInput").value.toLowerCase();
+
 storeEl.innerHTML="";
 learningEl.innerHTML="";
 knownEl.innerHTML="";
 
-store.forEach((w,i)=>{
+store
+.filter(w => w.kreyol.toLowerCase().includes(search) || w.espanol.toLowerCase().includes(search))
+.forEach((w,i)=>{
 storeEl.innerHTML+=`
 <div class="card">
 <div class="word">${w.kreyol}</div>
@@ -334,6 +384,7 @@ storeEl.innerHTML+=`
 <div class="actions">
 <button class="sound-btn" onclick="speak('${w.espanol}')">🔊 Koute</button>
 <button class="learn-btn" onclick="moveToLearning(${i})">📚 Aprann</button>
+<button class="delete-btn" onclick="deleteWord('store',${i})">🗑️</button>
 </div>
 </div>`;
 });
@@ -347,6 +398,7 @@ learningEl.innerHTML+=`
 <button class="sound-btn" onclick="speak('${w.espanol}')">🔊 Koute</button>
 <button class="learn-btn" onclick="moveToKnown(${i})">✅</button>
 <button class="back-btn" onclick="backToStore(${i})">↩</button>
+<button class="delete-btn" onclick="deleteWord('learning',${i})">🗑️</button>
 </div>
 </div>`;
 });
@@ -359,6 +411,7 @@ knownEl.innerHTML+=`
 <div class="actions">
 <button class="sound-btn" onclick="speak('${w.espanol}')">🔊 Koute</button>
 <button class="back-btn" onclick="backFromKnown(${i})">🔁</button>
+<button class="delete-btn" onclick="deleteWord('known',${i})">🗑️</button>
 </div>
 </div>`;
 });
@@ -369,10 +422,6 @@ updateStats();
 let storeEl=document.getElementById("store");
 let learningEl=document.getElementById("learning");
 let knownEl=document.getElementById("known");
-
-let storeTab=document.querySelectorAll(".tab")[0];
-let learningTab=document.querySelectorAll(".tab")[1];
-let knownTab=document.querySelectorAll(".tab")[2];
 
 updateStats();
 render();
