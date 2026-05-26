@@ -149,16 +149,16 @@ flex:1;
 min-width:90px;
 }
 
-/* 🗑️ */
+/* 🗑️ DELETE (pi piti) */
 .delete-btn{
 background:#e74c3c;
 color:white;
-padding:14px 18px;
-font-size:16px;
-border-radius:12px;
+padding:6px 8px;
+font-size:12px;
+border-radius:10px;
 font-weight:bold;
-flex:1;
-min-width:90px;
+flex:0;
+min-width:50px;
 }
 
 .back-btn{
@@ -187,7 +187,6 @@ font-weight:bold;
 
 <div class="container">
 
-<!-- AJOUT MO -->
 <div class="form-box">
 <h3>➕ Ajoute nouvo mo</h3>
 
@@ -199,12 +198,10 @@ font-weight:bold;
 <button class="add-btn" onclick="addWord()">💾 Ajoute</button>
 </div>
 
-<!-- SEARCH -->
 <div class="search-box">
 <input id="searchInput" placeholder="🔍 Chèche yon mo..." oninput="render()">
 </div>
 
-<!-- STATS -->
 <div class="stats">
 <div class="stat">
 <h3 id="storeCount">0</h3>
@@ -220,14 +217,12 @@ font-weight:bold;
 </div>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
 <div class="tab active" onclick="show('store')">📚 Magazen</div>
 <div class="tab" onclick="show('learning')">🧠 Aprann</div>
 <div class="tab" onclick="show('known')">✅ Konnen</div>
 </div>
 
-<!-- LIST -->
 <div id="store"></div>
 <div id="learning" style="display:none"></div>
 <div id="known" style="display:none"></div>
@@ -243,7 +238,6 @@ let store = JSON.parse(localStorage.getItem("store")) || [
 let learning = JSON.parse(localStorage.getItem("learning")) || [];
 let known = JSON.parse(localStorage.getItem("known")) || [];
 
-/* 🧠 VÈB YO AJOUTE */
 let verbs = [
 {kreyol:"manje",espanol:"comer"},
 {kreyol:"bwè",espanol:"beber"},
@@ -251,7 +245,6 @@ let verbs = [
 {kreyol:"kouri",espanol:"correr"}
 ];
 
-/* ajoute vèb yo yon sèl fwa */
 if(store.length < 5){
 store = store.concat(verbs);
 }
@@ -280,7 +273,6 @@ save();
 render();
 }
 
-/* 🌍 Google Translate */
 async function translateKreyol(text){
 try{
 let url="https://translate.googleapis.com/translate_a/single?client=gtx&sl=ht&tl=es&dt=t&q="+encodeURIComponent(text);
@@ -315,7 +307,6 @@ learningCount.innerText=learning.length;
 knownCount.innerText=known.length;
 }
 
-/* 🗑️ EFASÈ */
 function deleteWord(type,i){
 if(type==="store") store.splice(i,1);
 if(type==="learning") learning.splice(i,1);
@@ -374,9 +365,11 @@ storeEl.innerHTML="";
 learningEl.innerHTML="";
 knownEl.innerHTML="";
 
-store
-.filter(w => w.kreyol.toLowerCase().includes(search) || w.espanol.toLowerCase().includes(search))
-.forEach((w,i)=>{
+store.filter(w =>
+w.kreyol.toLowerCase().includes(search) ||
+w.espanol.toLowerCase().includes(search)
+).forEach((w,i)=>{
+
 storeEl.innerHTML+=`
 <div class="card">
 <div class="word">${w.kreyol}</div>
@@ -397,7 +390,7 @@ learningEl.innerHTML+=`
 <div class="actions">
 <button class="sound-btn" onclick="speak('${w.espanol}')">🔊 Koute</button>
 <button class="learn-btn" onclick="moveToKnown(${i})">✅</button>
-<button class="back-btn" onclick="backToStore(${i})">↩</button>
+<button class="back-btn" onclick="backToStore(${i})">Magazen</button>
 <button class="delete-btn" onclick="deleteWord('learning',${i})">🗑️</button>
 </div>
 </div>`;
